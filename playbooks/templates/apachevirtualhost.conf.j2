@@ -1,0 +1,23 @@
+# website you're trying to host
+<VirtualHost *:80>
+	ServerName {{ domain_sub }}.{{ domain_tld }}
+	#ServerAlias {{ domain_sub }}.{{ domain_tld }}
+	DocumentRoot /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html
+	<Directory /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html>
+		Require all granted
+		AllowOverride All
+		# potential speed boost in only having one .htaccess
+		#Include /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html/.htaccess 
+	</Directory>
+	# keep logs next to website for better storage management
+	# - must use combined log format for better awstats
+	CustomLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/access.log combined
+	ErrorLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/error.log
+</VirtualHost>
+
+# most compact way of redirecting from www to non-www (or vice versa)
+# - don't forget the trailing slash!
+#<VirtualHost *:80>
+#ServerName www.{{ domain_sub }}.{{ domain_tld }}
+#Redirect permanent / http://{{ domain_sub }}.{{ domain_tld }}/
+#</VirtualHost>

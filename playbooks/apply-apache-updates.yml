@@ -1,0 +1,13 @@
+#
+# ansible-playbook playbooks/apply-apache-updates.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+
+---
+
+- hosts: webservers
+  gather_facts: no
+  become: yes
+  tasks:
+    - include: includes/tasks/update-repo.yml
+
+    - include: includes/handlers/apache-restart.yml

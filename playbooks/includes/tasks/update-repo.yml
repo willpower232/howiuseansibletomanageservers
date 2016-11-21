@@ -1,0 +1,9 @@
+---
+
+- name: make sure repo is up to date
+  become: yes
+  shell: git fetch --all && git reset --hard origin/master chdir=/organisation/git
+
+- name: set permissions on permissions scripts
+  become: yes
+  shell: chmod -R 755 /organisation/git/config/permissions

@@ -1,0 +1,13 @@
+#
+# ansible-playbook playbooks/apply-dns-updates.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+
+---
+
+- hosts: dnsservers
+  gather_facts: no
+  become: yes
+  tasks:
+  - include: includes/tasks/update-repo.yml
+
+  - include: includes/handlers/bind-restart.yml

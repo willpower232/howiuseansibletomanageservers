@@ -1,0 +1,43 @@
+#
+# ansible-playbook playbooks/create-apache-letsencryptssl.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+# PLEASE NOTE THIS IS NOT A RELIABLE PLAYBOOK AS CERTBOT HAS MANY INTERACTIONS SO IF THE PROCESS FAILS, YOU MAY BE WAITING A LONG TIME
+#
+
+---
+
+- hosts: webservers:&web.example.com
+  gather_facts: no
+  become: yes
+  vars_prompt:
+    - name: "domain_tld"
+      prompt: "What is the TLD (i.e. example.com)?"
+      private: no
+    - name: "domain_sub"
+      prompt: "What is the site (i.e. www)?"
+      private: no
+    - name: "domain_certs"
+      prompt: "What are the domains to be covered by the certificate (i.e. www.example.com,example.com,alias.example.com)?"
+      private: no
+#    - name: "domain_first"
+#      prompt: "What was that first domain again (i.e. www.example.com)?"
+#      private: no
+  tasks:
+    - name: generate SSL certificate
+      command: /usr/bin/certbot certonly --webroot --webroot-path /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html/ --domains {{ domain_certs }}
+
+    - name: copy certificate to backup store
+      command: rsync -rqtl /etc/letsencrypt /organisation/local/
+
+# this doesn't work, its probably apples fault
+# essentially, this needs adding to the virtualhost
+#	SSLEngine on
+#	SSLCertificateFile /organisation/local/letsencrypt/live/{{ domain_first }}/fullchain.pem
+#	SSLCertificateKeyFile /organisation/local/letsencrypt/live/{{ domain_first }}/privkey.pem
+#	<FilesMatch "\.(cgi|shtml|phtml|php)$">
+#	  SSLOptions +StdEnvVars
+#	</FilesMatch>
+#	</VirtualHost>
+#    - name: update virtualhost file
+#      become: no
+#      local_action: command "sed -i '' 's/<\/VirtualHost>/SSLEngine on\nSSLCertificateFile \/organisation\/letsencrypt\/live\/{{ domain_first }}\/fullchain.pem\nSSLCertificateKeyFile \/organisation\/letsencrypt\/live\/{{ domain_first }}\/privkey.pem\n<FilesMatch "\\.(cgi|shtml|phtml|php)$">\n  SSLOptions +StdEnvVars\n<\/FilesMatch>\n<\/VirtualHost>/' {{ playbook_dir }}/../config/apache/{{ domain_tld }}.{{ domain_sub }}.conf"

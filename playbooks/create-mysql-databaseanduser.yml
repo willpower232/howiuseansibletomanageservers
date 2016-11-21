@@ -1,0 +1,50 @@
+#
+# ansible-playbook playbooks/create-mysql-databaseanduser.yml -i playbooks/inventory.txt --ask-pass --user=wh
+#
+# remember to conceal password from screen output
+#
+# gogo lookups http://docs.ansible.com/playbooks_lookups.html
+# - BECOME (SUDO) NO IS REQUIRED TO MAKE A USER FOR SOME REASON
+#
+
+---
+
+- hosts: webservers:&web.example.com
+  gather_facts: no
+  vars:
+    mysqlpassworddirectory: ../config/mysql/passwords
+    tehuserpassword: "{{ lookup('password', mysqlpassworddirectory + '/' + databaseuser + ' chars=ascii_letters,digits') }}"
+  vars_prompt:
+    - name: "databasename"
+      prompt: "What is the name of the database?"
+      private: no
+    - name: "databaseuser"
+      prompt: "What is the username for the new database?"
+      private: no
+    - name: "mysqluser"
+      prompt: "What is your MySQL username?"
+      private: no
+    - name: "mysqlpassword"
+      prompt: "What is your MySQL password?"
+      private: yes
+  tasks:
+    - name: create database
+      become: no
+      mysql_db:
+        login_user={{ mysqluser }}
+        login_password={{ mysqlpassword }}
+        name={{ databasename }}
+
+#    - name: output new users password
+#      debug:
+#        var={{ tehuserpassword }}
+
+    - name: create and/or update database user
+      become: no
+      mysql_user:
+        login_user={{ mysqluser }}
+        login_password={{ mysqlpassword }}
+        name={{ databaseuser }}
+        password={{ tehuserpassword }}
+        append_privs=yes
+        priv={{ databasename }}.*:SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER

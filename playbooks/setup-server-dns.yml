@@ -1,0 +1,24 @@
+#
+# ansible-playbook playbooks/setup-server-dns.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh --extra-vars="newdnsserver=dns1.example.com"
+#
+
+---
+
+- hosts: "{{ newdnsserver }}"
+  become: yes
+  gather_facts: no
+  tasks:
+  - include: includes/tasks/setup-server-common.yml
+
+  - name: install bind dns server
+    apt: pkg=bind9 state=latest
+
+  - name: add your dns zones to bind
+    shell: echo 'include "/organisation/git/config/bind/named.conf.git";' >> /etc/bind/named.conf.local
+    notify: restart bind
+
+  handlers:
+  - include: includes/handlers/bind-restart.yml
+  - include: includes/handlers/webmin.yml #required from common include
+
+- include: apply-firewall.yml servers=$newdnsserver

@@ -1,0 +1,35 @@
+#
+# ansible-playbook playbooks/create-dns-zone.yml -i playbooks/inventory.txt
+#
+
+---
+
+- hosts: localhost
+  remote_user: root
+  become: no
+  vars_prompt:
+    - name: "domain_tld"
+      prompt: "What is the TLD (i.e. example.com)?"
+      private: no
+  tasks:
+  - name: generate zone file
+    local_action: >
+      template
+      src=templates/bind-zone.hosts.j2
+      dest=config/bind/zones/{{ domain_tld }}.hosts
+
+  - name: pad configuration file
+    local_action: >
+      shell
+      echo "" >> config/bind/named.conf.git
+
+  - name: add zone file to configuration file
+    local_action: >
+      shell
+      echo 'zone "{{ domain_tld }}" { type master; file "/organisation/git/config/bind/zones/{{ domain_tld }}.hosts"; notify no; };' >> config/bind/named.conf.git
+
+#  - name: stage updated configuration file in git repo
+#    local_action: command git add config/bind/named.conf.git
+
+#  - name: stage new zone file in git repo
+#    local_action: command git add config/bind/zones/{{ domain_tld }}.hosts

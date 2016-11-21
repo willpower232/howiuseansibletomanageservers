@@ -1,0 +1,36 @@
+#
+# ansible-playbook playbooks/create-apache-virtualhost.yml -i playbooks/inventory.txt
+#
+
+---
+
+- hosts: localhost
+  gather_facts: no
+  remote_user: root
+  become: no
+  vars_prompt:
+    - name: "domain_tld"
+      prompt: "What is the TLD (i.e. example.com)?"
+      private: no
+    - name: "domain_sub"
+      prompt: "What is the site (i.e. www)?"
+      private: no
+  tasks:
+
+#  - name: make sure local repo is up to date
+#    local_action: command git pull chdir=./
+
+  - name: generate virtualhost file
+    local_action: >
+      template
+      src=templates/apachevirtualhost.conf.j2
+      dest=config/apache/{{ domain_tld }}-{{ domain_sub }}.conf
+
+#  - name: stage new virtualhost file in git repo
+#    local_action: command git add config/apache24/{{ domain_tld }}-{{ domain_sub }}.conf
+
+  - name: generate permissions file
+    local_action: >
+      template
+      src=templates/permissions.sh.j2
+      dest=config/permissions/{{ domain_tld }}-{{ domain_sub }}.sh

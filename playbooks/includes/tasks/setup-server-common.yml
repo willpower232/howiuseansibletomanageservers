@@ -1,0 +1,122 @@
+#
+# style bash and MOTD
+#
+# IN ORDER FOR EVERYTHING TO WORK, THERE MUST BE USERS ON EACH COMPUTER WITH THE SAME PASSWORD
+# OBVIOUSLY YOU DON'T NEED THE devs GROUP ON THE DNS SERVERS
+# # groupadd devs && mkdir /home/wh && useradd wh --shell /bin/bash && passwd wh && chown -R wh:wh /home/wh && adduser wh sudo && adduser wh devs
+#
+# when you have added a new user, make sure to set "PermitRootLogin no" in SSH
+#
+# SET UP HOSTNAME PROPERLY
+#    edit /etc/hostname and then reboot
+#
+# INSTALL POSTFIX (apt-get install postfix)
+# - set as Internet Site
+# - set hostname of the server as the thingy
+#
+# add sendgrid settings to postfix, watch out for the duplicate relayhost
+#
+# may need to force ipv4 in /etc/postfix/main.cf
+# - inet_protocols = ipv4
+# - smtp_address_preference = ipv4
+#
+# SSH KEYS for bitbucket
+#
+# your user and root need keys adding to bitbucket
+# but root only uses its key once to clone the repo initially
+#
+# apt-get update && apt-get install curl
+# curl --user USERNAME:PASSWORD --data-urlencode key@/home/wh/.ssh/id_rsa.pub --data "label=Webserver-Root" https://bitbucket.org/api/1.0/users/USERNAME/ssh-keys
+# curl --user USERNAME:PASSWORD --data-urlencode key@/home/wh/.ssh/id_rsa.pub --data "label=Webserver-Root" https://bitbucket.org/api/1.0/repositories/USERNAME/serverconfig/deploy-keys
+#
+
+---
+
+- name: change the timezone to london
+  shell: echo "Europe/London" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: apt update
+  apt: update_cache=yes
+
+- name: apt upgrade
+  command: apt-get upgrade -y
+
+- name: install standard packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+  - git
+  - perl                  #webmin
+  - libnet-ssleay-perl    #webmin
+  - openssl               #webmin
+  - libauthen-pam-perl    #webmin
+  - libpam-runtime        #webmin
+  - libio-pty-perl        #webmin
+  - apt-show-versions     #webmin
+  - python                #webmin
+  - apticron
+  - ntp
+  - logwatch
+  - zip
+  - sudo
+  - rsync
+  - aptitude
+  - fail2ban
+  - htop
+
+- name: make organisation and git directories
+  shell: /bin/mkdir -p /organisation/git && chgrp -R devs /organisation/git && chmod -R 775 /organisation/git
+
+- name: add bitbucket ssh key to system
+  shell: ssh-keyscan bitbucket.org >> /etc/ssh/ssh_known_hosts creates=/etc/ssh/ssh_known_hosts   #must use shell for >> support
+
+- name: clone git repo
+  become: no
+  git: repo=ssh://git@bitbucket.org/organisation/serverconfig.git dest=/organisation/git
+
+- name: retrieve webmin deb file
+  command: wget http://www.webmin.com/download/deb/webmin-current.deb creates=/tmp/webmin-current.deb chdir=/tmp
+
+- name: install webmin
+  command: dpkg --install /tmp/webmin-current.deb
+
+- name: change webmin ports
+  command: "sed --in-place {{ item }} /etc/webmin/miniserv.conf"
+  with_items:
+  - 's/port=10000/port=30303/'
+  - 's/listen=10000/listen=30303/'
+  notify: restart webmin
+
+- name: change apticron email address
+  command: sed --in-place 's/EMAIL="root"/EMAIL="maintenance@example.com"/' /etc/apticron/apticron.conf
+
+# - name: switch NTP to UK servers
+#   shell: sed --in-place 's/\.debian\.pool\.ntp\.org/\.uk\.pool\.ntp\.org/' /etc/ntp.conf && systemctl restart ntp
+
+- name: update logwatch settings to send high detailed emails
+  command: "sed --in-place {{ item }} /usr/share/logwatch/default.conf/logwatch.conf"
+  with_items:
+  - "'s/Output = stdout/Output = mail/'"
+  - "'s/MailTo = root/MailTo = maintenance@example.com/'"
+  - "'s/Detail = Low/Detail = High/'"
+
+# update the following logwatch files with custom log location
+# /usr/share/logwatch/default.conf/logfiles/http.conf
+# /usr/share/logwatch/default.conf/logfiles/http-error.conf
+
+- name: update logwatch cron to include email settings too, just in case
+  command: "sed --in-place 's/logwatch --output mail/logwatch --mailto maintenance@example.com/' /etc/cron.daily/00logwatch"
+
+# THIS IS WRONG THE LINE IS IN JAIL.CONF
+#- name: don't block ourselves in fail2ban
+#  shell: 'echo "ignore = 4.3.2.1" >> /etc/fail2ban/fail2ban.conf && fail2ban-client reload'
+
+# http://blog.bobbyallen.me/2013/02/03/how-to-redirect-local-root-mail-to-an-external-email-address-on-linux/
+- name: send root email to us
+  shell: 'echo "root: maintenance@example.com" >> /etc/aliases && newaliases && systemctl restart postfix'
+
+# floppy disk hilarity
+# lsmod | grep -i floppy (prove floppy driver loaded)
+# nano /etc/modprobe.d/blacklist (add "blacklist floppy")
+# - might be blacklist.conf?
+# reboot
+# http://www.cyberciti.biz/faq/linux-end_request-ioerror-dev-fd0-sector0/

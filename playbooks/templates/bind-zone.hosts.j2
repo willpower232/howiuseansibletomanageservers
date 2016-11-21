@@ -1,0 +1,23 @@
+$ttl 10h
+
+; DON'T FORGET TO UPDATE THE SERIAL NUMBER
+
+@	IN	SOA	dns1.example.com. support.example.com. (
+			{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}00 ; serial in year month day uniqueid format, 10 digits
+			3h ; refresh
+			1h ; retry
+			14d ; expire
+			1d ; minimum
+		)
+@	IN	NS	dns1.example.com.
+@	IN	NS	dns2.example.com.
+
+@	IN	A	1.2.3.4
+www	IN	A	1.2.3.4
+
+; http://www.openspf.org/SPF_Record_Syntax
+; @	IN	TXT	"v=spf1 include:sendgrid.net mx ~all" ; email is sent by sendgrid and domain users
+; @	IN	TXT	"v=spf1 include:sendgrid.net include:emailsrvr.com ~all" ; email is sent by sendgrid and rackspace users
+; @	IN	TXT	"v=spf1 include:emailsrvr.com ~all" ; no website, email from rackspace
+; @	IN	TXT	"v=spf1 include:sendgrid.net ~all" ; only sendgrid sends email for this domain
+@	IN	TXT	"v=spf1 -all" ; this domain doesn’t send email

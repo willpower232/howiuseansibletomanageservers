@@ -1,0 +1,148 @@
+#
+# ansible-playbook playbooks/setup-server-web.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh --extra-vars="newwebserver=web.example.com"
+#
+# this will leave your root mysql account without a password so use the following to get a new password prompt ONLY IF THERE IS NO PASSWORD:
+# $ mysqladmin -u root password
+#
+
+---
+
+- hosts: "{{ newwebserver }}"
+  become: yes
+  gather_facts: no
+  tasks:
+  - include: includes/tasks/setup-server-common.yml
+
+  - name: install webserver software
+    apt: pkg={{ item }} state=latest
+    with_items:
+    - apache2
+    - libapache2-mod-php5
+    - libapache2-mpm-itk      #that trippy user security thing, apache 2.4 only
+    - php5-cli
+    - php5-common
+    - php5-curl
+    - php5-gd
+    - php5-mcrypt
+    - php5-mysql
+    - mysql-server
+    - mysql-client
+    - awstats
+    - wkhtmltopdf
+    - subversion
+    - libapache2-svn
+    - python-mysqldb          #required for ansible to use mysql
+    - ghostscript             #required for gs command to generate JPG of PDF
+
+# Other packages we've used:
+# - php5-json # dependency of libapache2-mod-php5 and php5-cli
+# - php5-readline # recommended module from php5-cli, not really needed
+# - php5-cgi # should be libapache2-mod-php5
+# - php5-dev # used to compile more modules
+
+  - name: activate required apache2 modules
+    shell: a2enmod cgi expires headers rewrite ssl
+
+  - name: adjust apache2 SSL settings
+    command: "sed --in-place {{ item }} /etc/apache2/mods-available/ssl.conf"
+    with_items:
+    - "'s/#SSLHonorCipherOrder on/SSLHonorCipherOrder on/'"
+    - "'s/SSLCipherSuite HIGH:!aNULL/SSLCipherSuite \"EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRS !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4\"/'"
+
+# expires conf needs adding
+# deflate conf missing svg and fonts
+# status needs looking at too
+# access_compat is probably enabled by default http://www.the-art-of-web.com/system/apache-authorization/
+
+# logrotate for apache might need modifying
+# - change to weekly
+# - leave rotate at 14?
+# - change to 755
+# - update title for website logs
+
+  - name: set PHP preferred defaults
+    command: "sed --in-place {{ item }} /etc/php5/apache2/php.ini"
+    with_items:
+    - "'s/allow_url_fopen = On/allow_url_fopen = Off/'"
+    - "'s/;date.timezone =/date.timezone = Europe\\/London/'"
+    - "'s/post_max_size = 8M/post_max_size = 15M/'"
+    - "'s/upload_max_filesize = 2M/upload_max_filesize = 15M/'"
+
+  - name: restart apache2 for updated settings
+    shell: apachectl -k graceful
+
+  - name: set MySQL to utf8
+    command: "sed --in-place 's/\\[mysqld\\]/\\[mysqld\\]\\ncharacter-set-server=utf8\\ncollation-server=utf8_general_ci\\n/' /etc/mysql/my.cnf"
+
+# - to verify current encodings: SHOW VARIABLES LIKE 'char%';
+
+# to allow remote connections, in my.cnf comment out bind-address
+
+  - name: restart mysql for updated settings
+    command: systemctl restart mysql
+
+## AWSTATS
+
+# set site domain to servers default name in /etc/awstats/awstats.conf
+# IF YOU DON'T DO THIS, PREPARE TO BE BOMBARDED BY WARNING MESSAGES
+
+# http://www.debianhelp.co.uk/awstats.htm
+# http://ubuntuforums.org/archive/index.php/t-8410.html
+# http://www.debian-administration.org/articles/277
+
+# cd /usr/share/doc/awstats/examples
+# gunzip awstats.model.conf.gz
+# mkdir -p wwwroot/cgi-bin
+# cp awstats.model.conf wwwroot/cgi-bin/
+# ln -s /usr/local/awstats/css/ wwwroot/
+# ln -s /usr/share/awstats/* wwwroot/
+# ln -s /usr/lib/cgi-bin/awstats.pl wwwroot/cgi-bin/
+# chown -R www-data:www-data wwwroot/
+# update /etc/apache2/apache2.conf so awstats directory "Options FollowSymLinks"
+
+# perl awstats_configure.pl
+
+# yes non standard directory
+# /etc/apache2/apache2.conf
+# don't make a new config profile file?
+# clients.example.com
+# enter for default config file store
+
+# change logfile to LogFile="/organisation/websites/example.com/clients/logs/access.log"
+# we should change the directory of the logs to something as well
+# - should be able to migrate the old awstats files straight in here
+
+# /usr/lib/cgi-bin/awstats.pl -config=www.something.co.uk -update
+
+# http://clients.example.com/awstats/awstats.pl?config=www.something.co.uk
+
+# http://catsarebetter.resist.ca/?p=142 - password notes
+# perhaps then we turn off the main awstats aliases and add them only on a certain domain
+# htpasswd that domain
+# use a rewrite to simplify the path
+
+## PDF stuff?
+# apt-get install libxrender1
+
+# you need arial too
+# add contrib onto main two lines in sources.list
+# apt-get update && apt-get install msttcorefonts
+
+## SVN notes
+# https://wiki.archlinux.org/index.php/Subversion_Setup
+
+## GIT server
+
+  - name: create user for git server
+    shell: mkdir -p /organisation/gitserver/.ssh && useradd git --shell /bin/bash && passwd git && touch /organisation/gitserver/.ssh/authorized_keys && chown -R git:git /organisation/gitserver && chmod -R 700 /organisation/gitserver
+
+# ssh-keygen -C "will@example.com"
+# cat .ssh/id_rsa.pub | ssh git@web.example.com "cat >> ~/.ssh/authorized_keys"
+# test that you can now log in without a password
+# pwd to check you're in the gitserver folder
+# git init --bare example.com-www.git
+
+  handlers:
+  - include: includes/handlers/webmin.yml #required from common include
+
+- include: apply-firewall.yml servers={{ newwebserver }}

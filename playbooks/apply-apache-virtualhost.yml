@@ -1,0 +1,46 @@
+#
+# ansible-playbook playbooks/apply-apache-virtualhost.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+
+---
+
+- hosts: webservers:&web.example.com
+  gather_facts: no
+  become: yes
+  vars_prompt:
+    - name: "domain_tld"
+      prompt: "What is the TLD (i.e. example.com)?"
+      private: no
+    - name: "domain_sub"
+      prompt: "What is the site (i.e. www)?"
+      private: no
+  tasks:
+    - include: includes/tasks/update-repo.yml
+
+    - name: activate virtual host
+      file: >
+        state=link
+        src=/organisation/git/config/apache24/{{ domain_tld }}-{{ domain_sub }}.conf
+        dest=/etc/apache2/sites-enabled/{{ domain_tld }}-{{ domain_sub }}.conf
+#      command: /bin/ln -s /organisation/git/config/apache/{{ domain_tld }}-{{ domain_sub }}.conf /etc/apache2/sites-enabled/{{ domain_tld }}-{{ domain_sub }}.conf
+
+    - name: create virtualhost directories
+      command: /bin/mkdir -p /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/{{ item }}
+      with_items:
+      - awstats
+      - logs
+      - public_html
+      - tmp
+
+    - name: do we need to link a permissions script?
+      stat: path=/organisation/git/config/permissions/{{ domain_tld }}-{{ domain_sub }}.sh
+      register: permcheck
+
+    - name: link permissions script
+      file: >
+        state=link
+        src=/organisation/git/config/permissions/{{ domain_tld }}-{{ domain_sub }}.sh
+        dest=/organisation/websites/{{ domain_tld }}/{{ domain_sub }}/_permissions.sh
+      when: permcheck.stat.exists is defined and permcheck.stat.exists == True
+
+    - include: includes/handlers/apache-restart.yml

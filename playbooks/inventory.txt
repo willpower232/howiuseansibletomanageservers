@@ -1,0 +1,6 @@
+[dnsservers]
+dns1.example.com
+dns2.example.com
+
+[webservers]
+web.example.com

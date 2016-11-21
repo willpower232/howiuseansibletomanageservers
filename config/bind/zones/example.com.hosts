@@ -1,0 +1,21 @@
+$ttl 10h
+
+; DON'T FORGET TO UPDATE THE SERIAL NUMBER
+
+@	IN	SOA	dns1.example.com. support.example.com. (
+			2016111300 ; serial in year month day uniqueid format, 10 digits
+			3h ; refresh
+			1h ; retry
+			14d ; expire
+			1d ; minimum
+		)
+@	IN	NS	dns1.example.com.
+@	IN	NS	dns2.example.com.
+
+@	IN	A	1.2.3.4
+www	IN	A	1.2.3.4
+
+@	IN	TXT	"v=spf1 -all"
+
+dns1	IN	A	2.3.4.5
+dns2	IN	A	3.4.5.6
