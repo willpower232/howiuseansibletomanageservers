@@ -52,6 +52,7 @@
 # expires conf needs adding
 # deflate conf missing svg and fonts
 # status needs looking at too
+# - when enabling status be sure to not enable localhost access (might be default?), use it on a specific domain name to prevent leaking of information about the server
 # access_compat is probably enabled by default http://www.the-art-of-web.com/system/apache-authorization/
 
 # logrotate for apache might need modifying
