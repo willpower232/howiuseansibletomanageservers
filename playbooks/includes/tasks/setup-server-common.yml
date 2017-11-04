@@ -35,6 +35,9 @@
 - name: change the timezone to london
   shell: echo "Europe/London" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
 
+- name: ensure python is installed (particularly for AWS EC2)
+  raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
+
 - name: apt update
   apt: update_cache=yes
 
