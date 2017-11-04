@@ -36,14 +36,18 @@
     - php7.1-xml
     - php7.1-bcmath
     - php7.1-mbstring
-    - mysql-server
-    - mysql-client
     - awstats
     - wkhtmltopdf
     - subversion
     - libapache2-svn
     - python-mysqldb          #required for ansible to use mysql
     - ghostscript             #required for gs command to generate JPG of PDF
+
+    # don't install a local mysql server if you don't need it
+    #- mysql-server
+
+    # try to have better local dev tools instead of installing a client
+    #- mysql-client
 
     # if apache
     #- apache2
