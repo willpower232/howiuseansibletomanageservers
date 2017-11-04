@@ -38,8 +38,6 @@
     - php7.1-mbstring
     - awstats
     - wkhtmltopdf
-    - subversion
-    - libapache2-svn
     - python-mysqldb          #required for ansible to use mysql
     - ghostscript             #required for gs command to generate JPG of PDF
 
