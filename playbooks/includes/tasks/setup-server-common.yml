@@ -65,6 +65,8 @@
   - aptitude
   - fail2ban
   - htop
+  - curl
+  - wget
 
 - name: make organisation and git directories
   shell: /bin/mkdir -p /organisation/git && chgrp -R devs /organisation/git && chmod -R 775 /organisation/git
