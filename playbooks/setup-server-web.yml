@@ -79,6 +79,13 @@
 # add contrib onto main two lines in sources.list
 # apt-get update && apt-get install msttcorefonts
 
+  # composer doesn't currently have a latest stable version link so you have to check yourself at https://getcomposer.org/download/
+  - name: install composer globally
+    get_url:
+      url: https://getcomposer.org/download/1.5.2/composer.phar
+      dest: /usr/local/bin/composer
+      mode: 0755
+
   # if apache
   #- name: activate required apache2 modules
   #  shell: a2enmod cgi expires headers rewrite ssl
