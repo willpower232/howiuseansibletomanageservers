@@ -28,6 +28,7 @@
       prompt: "What is your MySQL password?"
       private: yes
   tasks:
+    # if the server you are running this on doesn't run the mysql server, you can specify login_host
     - name: create database
       become: no
       mysql_db:
@@ -39,6 +40,8 @@
 #      debug:
 #        var={{ tehuserpassword }}
 
+    # if the server you are running this on doesn't run the mysql server, you can specify login_host to match the above
+    # you will also probably need to specify host for the user as localhost won't be appropriate
     - name: create and/or update database user
       become: no
       mysql_user:
