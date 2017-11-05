@@ -19,6 +19,9 @@
   - name: add ondrej and certbot PPAs
     shell: apt install -y python-software-properties software-properties-common && add-apt-repository -y ppa:ondrej/php && add-apt-repository -y ppa:certbot/certbot
 
+  # in this multiple-playbooks-that-install-things setup, you need to apt update again
+  - apt: update_cache=yes
+
   - name: install webserver software
     apt: pkg={{ item }} state=latest
     with_items:
