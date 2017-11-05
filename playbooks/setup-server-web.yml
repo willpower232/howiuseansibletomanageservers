@@ -43,7 +43,7 @@
     - python-mysqldb          #required for ansible to use mysql
     - ghostscript             #required for gs command to generate JPG of PDF
 
-    # don't install a local mysql server if you don't need it
+    # don't install a local mysql server if you don't need it (to allow remote connections comment out bind-address wherever it is)
     #- mysql-server
 
     # try to have better local dev tools instead of installing a client
@@ -119,16 +119,6 @@
   # if apache
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
-
-  - name: set MySQL to utf8
-    command: "sed --in-place 's/\\[mysqld\\]/\\[mysqld\\]\\ncharacter-set-server=utf8\\ncollation-server=utf8_general_ci\\n/' /etc/mysql/my.cnf"
-
-# - to verify current encodings: SHOW VARIABLES LIKE 'char%';
-
-# to allow remote connections, in my.cnf comment out bind-address
-
-  - name: restart mysql for updated settings
-    command: systemctl restart mysql
 
 ## AWSTATS
 
