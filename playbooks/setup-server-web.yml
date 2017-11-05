@@ -37,7 +37,9 @@
     - php7.1-bcmath
     - php7.1-mbstring
     - awstats
-    - wkhtmltopdf
+    - libxrender1 #wkhtmltopdf
+    - fontconfig  #wkhtmltopdf
+    - xvfb        #wkhtmltopdf
     - python-mysqldb          #required for ansible to use mysql
     - ghostscript             #required for gs command to generate JPG of PDF
 
@@ -53,6 +55,29 @@
     # for apache cgi
     #- libapache2-mod-php7.1
     #- libapache2-mpm-itk      #simple security settings
+
+  # wkhtmltopdf on ubuntu 16.04 doesn't work with a newer libssl dev
+  - name: force downgrade of libssl-dev for wkhtmltopdf 12.4
+    shell: |
+      apt install libssl-dev=1.0.2g-1ubuntu4.8;
+      apt-mark hold libssl-dev;
+
+  # cd /usr/local/bin && wget ... && tar -xf ... && rm ...
+  - name: download and extract wkhtmltopdf
+    unarchive:
+      src: https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+      dest: /usr/local/bin
+      remote_src: yes
+
+  - name: expose the wkhtmltox binaries
+    shell: |
+      rsync -rvt /usr/local/bin/wkhtmltox/bin/* /usr/local/bin/;
+      rm -rf /usr/local/bin/wkhtmltox;
+
+## PDF notes
+# you may need arial too
+# add contrib onto main two lines in sources.list
+# apt-get update && apt-get install msttcorefonts
 
   # if apache
   #- name: activate required apache2 modules
@@ -137,13 +162,6 @@
 # perhaps then we turn off the main awstats aliases and add them only on a certain domain
 # htpasswd that domain
 # use a rewrite to simplify the path
-
-## PDF stuff?
-# apt-get install libxrender1
-
-# you need arial too
-# add contrib onto main two lines in sources.list
-# apt-get update && apt-get install msttcorefonts
 
 ## SVN notes
 # https://wiki.archlinux.org/index.php/Subversion_Setup
