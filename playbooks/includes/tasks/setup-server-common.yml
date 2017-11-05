@@ -67,6 +67,7 @@
   - htop
   - curl
   - wget
+  - needrestart # great on servers, not that useful on WSL
 
 - name: make organisation and git directories
   shell: /bin/mkdir -p /organisation/git && chgrp -R devs /organisation/git && chmod -R 775 /organisation/git
