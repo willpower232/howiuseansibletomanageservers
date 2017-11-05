@@ -36,7 +36,6 @@
     - php7.1-xml
     - php7.1-bcmath
     - php7.1-mbstring
-    - awstats
     - libxrender1 #wkhtmltopdf
     - fontconfig  #wkhtmltopdf
     - xvfb        #wkhtmltopdf
@@ -119,60 +118,6 @@
   # if apache
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
-
-## AWSTATS
-
-# set site domain to servers default name in /etc/awstats/awstats.conf
-# IF YOU DON'T DO THIS, PREPARE TO BE BOMBARDED BY WARNING MESSAGES
-
-# http://www.debianhelp.co.uk/awstats.htm
-# http://ubuntuforums.org/archive/index.php/t-8410.html
-# http://www.debian-administration.org/articles/277
-
-# cd /usr/share/doc/awstats/examples
-# gunzip awstats.model.conf.gz
-# mkdir -p wwwroot/cgi-bin
-# cp awstats.model.conf wwwroot/cgi-bin/
-# ln -s /usr/local/awstats/css/ wwwroot/
-# ln -s /usr/share/awstats/* wwwroot/
-# ln -s /usr/lib/cgi-bin/awstats.pl wwwroot/cgi-bin/
-# chown -R www-data:www-data wwwroot/
-# update /etc/apache2/apache2.conf so awstats directory "Options FollowSymLinks"
-
-# perl awstats_configure.pl
-
-# yes non standard directory
-# /etc/apache2/apache2.conf
-# don't make a new config profile file?
-# clients.example.com
-# enter for default config file store
-
-# change logfile to LogFile="/organisation/websites/example.com/clients/logs/access.log"
-# we should change the directory of the logs to something as well
-# - should be able to migrate the old awstats files straight in here
-
-# /usr/lib/cgi-bin/awstats.pl -config=www.something.co.uk -update
-
-# http://clients.example.com/awstats/awstats.pl?config=www.something.co.uk
-
-# http://catsarebetter.resist.ca/?p=142 - password notes
-# perhaps then we turn off the main awstats aliases and add them only on a certain domain
-# htpasswd that domain
-# use a rewrite to simplify the path
-
-## SVN notes
-# https://wiki.archlinux.org/index.php/Subversion_Setup
-
-## GIT server
-
-  - name: create user for git server
-    shell: mkdir -p /organisation/gitserver/.ssh && useradd git --shell /bin/bash && passwd git && touch /organisation/gitserver/.ssh/authorized_keys && chown -R git:git /organisation/gitserver && chmod -R 700 /organisation/gitserver
-
-# ssh-keygen -C "will@example.com"
-# cat .ssh/id_rsa.pub | ssh git@web.example.com "cat >> ~/.ssh/authorized_keys"
-# test that you can now log in without a password
-# pwd to check you're in the gitserver folder
-# git init --bare example.com-www.git
 
   handlers:
   - include: includes/handlers/webmin.yml #required from common include

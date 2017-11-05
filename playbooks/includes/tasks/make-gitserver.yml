@@ -1,0 +1,10 @@
+---
+
+- name: create user for git server
+  shell: mkdir -p /organisation/gitserver/.ssh && useradd git --shell /bin/bash && passwd git && touch /organisation/gitserver/.ssh/authorized_keys && chown -R git:git /organisation/gitserver && chmod -R 700 /organisation/gitserver
+
+# ssh-keygen -C "will@example.com"
+# cat .ssh/id_rsa.pub | ssh git@web.example.com "cat >> ~/.ssh/authorized_keys"
+# test that you can now log in without a password
+# pwd to check you're in the gitserver folder
+# git init --bare example.com-www.git
