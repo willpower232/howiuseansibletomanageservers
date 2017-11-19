@@ -1,4 +1,8 @@
 #
+# SSH Key version:
+# ansible-playbook playbooks/setup-server-dns.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh --extra-vars="newdnsserver=dns1.example.com"
+#
+# SSH Password version:
 # ansible-playbook playbooks/setup-server-dns.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh --extra-vars="newdnsserver=dns1.example.com"
 #
 

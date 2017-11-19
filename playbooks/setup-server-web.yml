@@ -1,4 +1,8 @@
 #
+# SSH Key version:
+# ansible-playbook playbooks/setup-server-web.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh --extra-vars="newwebserver=web.example.com"
+#
+# SSH Password version:
 # ansible-playbook playbooks/setup-server-web.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh --extra-vars="newwebserver=web.example.com"
 #
 # this will leave your root mysql account without a password so use the following to get a new password prompt ONLY IF THERE IS NO PASSWORD:

@@ -1,4 +1,8 @@
 #
+# SSH Key version:
+# ansible-playbook playbooks/apply-apache-updates.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh
+#
+# SSH Password version:
 # ansible-playbook playbooks/apply-apache-updates.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
 #
 
