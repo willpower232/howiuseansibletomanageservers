@@ -1,0 +1,12 @@
+ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+
+ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+ssl_prefer_server_ciphers on;
+ssl_ciphers EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA512:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:ECDH+AESGCM:ECDH+AES256:DH+AESGCM:DH+AES256:RSA+AESGCM:!aNULL:!eNULL:!LOW:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS;
+
+keepalive_timeout 70;
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:20m;
+ssl_session_tickets off;
+
+add_header Strict-Transport-Security "max-age=31536000" always;

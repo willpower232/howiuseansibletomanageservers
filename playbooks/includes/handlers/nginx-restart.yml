@@ -1,0 +1,9 @@
+---
+
+- name: check nginx
+  command: service nginx configtest
+
+- name: restart nginx
+  service:
+    name: nginx 
+    state: restarted

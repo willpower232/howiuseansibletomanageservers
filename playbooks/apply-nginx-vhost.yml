@@ -1,0 +1,70 @@
+#
+# SSH Key version:
+# ansible-playbook playbooks/apply-nginx-vhost.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh
+#
+# SSH Password version:
+# ansible-playbook playbooks/apply-nginx-vhost.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+
+---
+
+- hosts: webservers:&web.example.com
+  gather_facts: no
+  become: yes
+  vars_prompt:
+  - name: "domain_tld"
+    prompt: "What is the TLD (i.e. example.com)?"
+    private: no
+  - name: "domain_sub"
+    prompt: "What is the site (i.e. www)?"
+    private: no
+  - name: "domain_user"
+    prompt: "What is the user (i.e. example)?"
+    private: no
+  tasks:
+  - include: includes/tasks/update-repo.yml
+
+  - name: create domain directories
+    file:
+      path: /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/{{ item }}
+      state: directory
+    with_items:
+    - logs
+    - public_html
+    - tmp
+
+  - name: create user
+    user:
+      name: "{{ domain_user }}"
+      shell: /bin/bash
+      home: "/organisation/websites/{{ domain_tld }}"
+
+  - name: set permissions
+    file:
+      path: "/organisation/websites/{{ domain_tld }}"
+      owner: "{{ domain_user }}"
+      group: "{{ domain_user }}"
+      mode: 0750
+      state: directory
+      recurse: yes
+
+  - name: add www-data to new user group
+    user:
+      name: www-data
+      groups: "{{ domain_user }}" # must be groups to not change the primary group
+      append: yes
+
+  - name: activate virtual host
+    file:
+      state: link
+      src: "/organisation/git/config/nginx/sites/{{ domain_tld }}-{{ domain_sub }}"
+      dest: "/etc/nginx/sites-enabled/{{ domain_tld }}-{{ domain_sub }}"
+
+  - name: activate fpm pool
+    file:
+      state: link
+      src: "/organisation/git/config/fpm/pools/{{ domain_tld }}-{{ domain_sub }}.conf"
+      dest: "/etc/php/7.1/fpm/pool.d/{{ domain_tld }}-{{ domain_sub }}.conf"
+
+  - include: includes/handlers/nginx-restart.yml
+  - include: includes/handlers/fpm-restart.yml

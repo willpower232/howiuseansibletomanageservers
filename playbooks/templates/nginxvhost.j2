@@ -1,0 +1,56 @@
+#server {
+#	listen 80;
+#	server_name {{ domain_sub }}.{{ domain_tld }};
+#	return 301 https://{{ domain_sub }}.{{ domain_tld }}$request_uri;
+#}
+
+server {
+#	listen 443 ssl http2;
+#	ssl_certificate      /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/fullchain.pem;
+#	ssl_certificate_key  /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/privkey.pem;
+#	include /organisation/git/config/nginx/sslsettings;
+
+	listen 80;
+	server_name {{ domain_sub }}.{{ domain_tld }};
+	root /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html;
+	index index.php;
+	expires $expires;
+
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	location ~ [^/]\.php(/|$) {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+		if (!-f $document_root$fastcgi_script_name) {
+			return 404;
+		}
+
+		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_user }}-{{ domain_sub }}.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include fastcgi_params;
+	}
+
+#	location /fpmstatus {
+#		access_log off;
+#		allow 127.0.0.1;
+#		allow 123.45.67.89;
+#		deny all;
+#		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_user }}-{{ domain_sub }}.sock;
+#		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+#		include fastcgi_params;
+#	}
+
+#	location /nginxstatus {
+#		access_log off;
+#		allow 127.0.0.1;
+#		allow 123.45.67.89;
+#		deny all;
+#		stub_status on;
+#	}
+
+	access_log /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/access-nginx.log;
+	error_log /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/error-nginx.log;
+}

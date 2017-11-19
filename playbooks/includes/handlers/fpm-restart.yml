@@ -1,0 +1,9 @@
+---
+
+- name: check php-fpm config
+  command: php-fpm7.1 --test
+
+- name: restart php-fpm
+  service:
+    name: php7.1-fpm
+    state: restarted
