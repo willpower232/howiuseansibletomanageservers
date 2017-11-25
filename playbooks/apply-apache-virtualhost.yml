@@ -36,15 +36,4 @@
       - public_html
       - tmp
 
-    - name: do we need to link a permissions script?
-      stat: path=/organisation/git/config/permissions/{{ domain_tld }}-{{ domain_sub }}.sh
-      register: permcheck
-
-    - name: link permissions script
-      file: >
-        state=link
-        src=/organisation/git/config/permissions/{{ domain_tld }}-{{ domain_sub }}.sh
-        dest=/organisation/websites/{{ domain_tld }}/{{ domain_sub }}/_permissions.sh
-      when: permcheck.stat.exists is defined and permcheck.stat.exists == True
-
     - include: includes/handlers/apache-restart.yml
