@@ -31,10 +31,8 @@
     with_items:
     - certbot
     - nginx
-    - php7.1
     - php7.1-fpm      # if not CGI
     - php7.1-cli
-    - php7.1-common
     - php7.1-curl
     - php7.1-gd
     - php7.1-mcrypt
@@ -114,17 +112,15 @@
 # - change to 755
 # - update title for website logs
 
-  - name: set PHP preferred defaults
-    command: "sed --in-place {{ item }} /etc/php5/apache2/php.ini"
-    with_items:
-    - "'s/allow_url_fopen = On/allow_url_fopen = Off/'"
-    - "'s/;date.timezone =/date.timezone = Europe\\/London/'"
-    - "'s/post_max_size = 8M/post_max_size = 15M/'"
-    - "'s/upload_max_filesize = 2M/upload_max_filesize = 15M/'"
 
   # if apache
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
+  - name: install PHP defaults
+    file:
+      state: link
+      src: /organisation/git/config/fpm/phpdefaults
+      dest: /etc/php/7.1/fpm/conf.d/99-organisationdefaults.ini
 
   handlers:
   - include: includes/handlers/webmin.yml #required from common include
