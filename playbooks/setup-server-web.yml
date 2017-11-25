@@ -55,10 +55,11 @@
 
     # if apache
     #- apache2
+    #- libapache2-mod-fastcgi  # to talk to PHP FPM
 
     # for apache cgi
-    #- libapache2-mod-php7.1
-    #- libapache2-mpm-itk      #simple security settings
+    #- libapache2-mod-php7.1   # alternative to fastcgi
+    #- libapache2-mpm-itk      # simple change of user for security in the absence of PHP FPM
 
   # wkhtmltopdf on ubuntu 16.04 doesn't work with a newer libssl dev
   - name: force downgrade of libssl-dev for wkhtmltopdf 12.4
@@ -92,19 +93,30 @@
 
   # if apache
   #- name: activate required apache2 modules
-  #  shell: a2enmod cgi expires headers rewrite ssl
+  #  shell: a2enmod actions expires headers rewrite ssl
+  # status is enabled by default, maybe add it to a specific domain if you want to use it
+  # notes on apache authorization http://www.the-art-of-web.com/system/apache-authorization/
 
-  #- name: adjust apache2 SSL settings
-  #  command: "sed --in-place {{ item }} /etc/apache2/mods-available/ssl.conf"
-  #  with_items:
-  #  - "'s/#SSLHonorCipherOrder on/SSLHonorCipherOrder on/'"
-  #  - "'s/SSLCipherSuite HIGH:!aNULL/SSLCipherSuite \"EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRS !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4\"/'"
+  #- name: install Apache SSL
+  #  file:
+  #    state: link
+  #    src: /organisation/git/config/apache/ssl
+  #    dest: /etc/apache2/mods-enabled/organisation-ssl.conf
 
-# expires conf needs adding
-# deflate conf missing svg and fonts
-# status needs looking at too
-# - when enabling status be sure to not enable localhost access (might be default?), use it on a specific domain name to prevent leaking of information about the server
-# access_compat is probably enabled by default http://www.the-art-of-web.com/system/apache-authorization/
+  #- name: install Apache deflate
+  #  file:
+  #    state: link
+  #    src: /organisation/git/config/apache/deflate
+  #    dest: /etc/apache2/mods-enabled/organisation-deflate.conf
+
+  #- name: install Apache expires
+  #  file:
+  #    state: link
+  #    src: /organisation/git/config/apache/expires
+  #    dest: /etc/apache2/mods-enabled/organisation-expires.conf
+
+  #- name: restart apache2 for updated settings
+  #  shell: apachectl -k graceful
 
 # logrotate for apache might need modifying
 # - change to weekly
@@ -112,10 +124,6 @@
 # - change to 755
 # - update title for website logs
 
-
-  # if apache
-  #- name: restart apache2 for updated settings
-  #  shell: apachectl -k graceful
   - name: install PHP defaults
     file:
       state: link

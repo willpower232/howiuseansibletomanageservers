@@ -1,0 +1,17 @@
+<IfModule mod_deflate.c>
+	<IfModule mod_filter.c>
+		AddType image/svg+xml .svg
+
+		AddOutputFilterByType DEFLATE image/svg+xml
+
+		AddOutputFilterByType DEFLATE application/x-font
+		AddOutputFilterByType DEFLATE application/x-font-truetype
+		AddOutputFilterByType DEFLATE application/x-font-ttf
+		AddOutputFilterByType DEFLATE application/x-font-otf
+		AddOutputFilterByType DEFLATE application/x-font-opentype
+		AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+		AddOutputFilterByType DEFLATE font/ttf
+		AddOutputFilterByType DEFLATE font/otf
+		AddOutputFilterByType DEFLATE font/opentype
+	</IfModule>
+</IfModule>

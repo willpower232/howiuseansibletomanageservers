@@ -1,0 +1,11 @@
+<FilesMatch "\.svg$">
+	Header set Cache-Control "max-age=31449600, public"
+	ExpiresActive On
+</FilesMatch>
+<FilesMatch "\.(svg|jpg|png|css|js|ico)$" >
+	ExpiresActive On
+	ExpiresDefault "access plus 1 year"
+</FilesMatch>
+<FilesMatch "\.(css|js)$">
+	Header append Vary: Accept-Encoding
+</FilesMatch>
