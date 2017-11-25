@@ -128,5 +128,3 @@
 
   handlers:
   - include: includes/handlers/webmin.yml #required from common include
-
-- include: apply-firewall.yml servers={{ newwebserver }}
