@@ -118,17 +118,21 @@
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
 
-# logrotate for apache might need modifying
-# - change to weekly
-# - leave rotate at 14?
-# - change to 755
-# - update title for website logs
-
   - name: install PHP defaults
     file:
       state: link
       src: /organisation/git/config/fpm/phpdefaults
       dest: /etc/php/7.1/fpm/conf.d/99-organisationdefaults.ini
+
+  - name: install additional logrotate config files
+    file:
+      state: link
+      src: "/organisation/git/config/logrotate/{{ item }}"
+      dest: "/etc/logrotate.d/{{ item }}-organisation"
+    with_items:
+    #- apache    # if apache
+    - fpm
+    - nginx
 
   handlers:
   - include: includes/handlers/webmin.yml # required from common include
