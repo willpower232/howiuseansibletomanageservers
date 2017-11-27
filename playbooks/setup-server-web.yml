@@ -41,11 +41,11 @@
     - php7.1-xml
     - php7.1-bcmath
     - php7.1-mbstring
-    - libxrender1 #wkhtmltopdf
-    - fontconfig  #wkhtmltopdf
-    - xvfb        #wkhtmltopdf
-    - python-mysqldb          #required for ansible to use mysql
-    - ghostscript             #required for gs command to generate JPG of PDF
+    - libxrender1     # wkhtmltopdf
+    - fontconfig      # wkhtmltopdf
+    - xvfb            # wkhtmltopdf
+    - python-mysqldb  # required for ansible to use mysql
+    - ghostscript     # required for gs command to generate JPG of PDF
 
     # don't install a local mysql server if you don't need it (to allow remote connections comment out bind-address wherever it is)
     #- mysql-server
@@ -131,4 +131,4 @@
       dest: /etc/php/7.1/fpm/conf.d/99-organisationdefaults.ini
 
   handlers:
-  - include: includes/handlers/webmin.yml #required from common include
+  - include: includes/handlers/webmin.yml # required from common include
