@@ -33,3 +33,7 @@ You should make your own copy of this repository and change probably every insta
 Using your terminal of choice, `cd` to root of this repository. Use `head` to get the top lines of the playbook you want to use and copy paste the command. Answer the questions and the actions will be made.
 
 When generating new files, you will have to commit and push them yourself which gives you the option to review and adjust the contents as necessary.
+
+### Log Files ###
+
+You will notice that the log files are generated in the website directories. This means you won't find them in `/var/log` as it makes them more accessible to the system user running the website (which may be shared with a third party) and also means if you ever shut down the website, you will remove the log files for that website as well.
