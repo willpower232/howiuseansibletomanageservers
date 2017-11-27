@@ -28,6 +28,8 @@ Using Python and PIP is the best way here. If you are having issues with PIP not
 
 ## Using this repository ##
 
+You should make your own copy of this repository and change probably every instance of `organisation` to the name of your organisation or brand.
+
 Using your terminal of choice, `cd` to root of this repository. Use `head` to get the top lines of the playbook you want to use and copy paste the command. Answer the questions and the actions will be made.
 
 When generating new files, you will have to commit and push them yourself which gives you the option to review and adjust the contents as necessary.
