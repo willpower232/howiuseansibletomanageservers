@@ -11,8 +11,8 @@
 	</Directory>
 	# keep logs next to website for better storage management
 	# - must use combined log format for better awstats
-	CustomLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/access.log combined
-	ErrorLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/error.log
+	CustomLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/access-apache.log combined
+	ErrorLog /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/error-apache.log
 
 	<Directory /usr/lib/cgi-bin>
 		Require all granted
