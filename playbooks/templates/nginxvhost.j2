@@ -1,16 +1,15 @@
-#server {
-#	listen 80;
+server {
+	listen 80;
 #	server_name {{ domain_sub }}.{{ domain_tld }};
 #	return 301 https://{{ domain_sub }}.{{ domain_tld }}$request_uri;
 #}
 
-server {
+#server {
 #	listen 443 ssl http2;
 #	ssl_certificate      /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/fullchain.pem;
 #	ssl_certificate_key  /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/privkey.pem;
 #	include /organisation/git/config/nginx/sslsettings;
 
-	listen 80;
 	server_name {{ domain_sub }}.{{ domain_tld }};
 	root /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html;
 	index index.php;
