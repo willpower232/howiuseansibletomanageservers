@@ -118,6 +118,12 @@
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
 
+  - name: install nginx additional settings
+    file:
+      state: link
+      src: /organisation/git/config/nginx/serversettings
+      dest: /etc/nginx/conf.d/organisationdefaults.conf
+
   - name: install PHP defaults
     file:
       state: link
