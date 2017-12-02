@@ -62,9 +62,10 @@
     #- libapache2-mpm-itk      # simple change of user for security in the absence of PHP FPM
 
   # wkhtmltopdf on ubuntu 16.04 doesn't work with a newer libssl dev
+  # (libssl-dev may not be installed at all but if you get stuck refer to https://github.com/wkhtmltopdf/wkhtmltopdf/issues/3001)
   - name: force downgrade of libssl-dev for wkhtmltopdf 12.4
     shell: |
-      apt install libssl-dev=1.0.2g-1ubuntu4.8;
+      apt install libssl-dev=1.0.2g-1ubuntu4.9;
       apt-mark hold libssl-dev;
 
   # cd /usr/local/bin && wget ... && tar -xf ... && rm ...
