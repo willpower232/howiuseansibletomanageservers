@@ -1,0 +1,21 @@
+[DEFAULT]
+
+# add your IP address here, option overwrites, not merges
+#ignoreip = 127.0.0.1/8 your.ip.address.here
+
+[sshd]
+
+# 6 hours
+bantime = 21600
+
+[sshlongterm]
+
+enabled = true
+port = ssh
+logpath = /var/log/auth.log
+filter = sshd
+maxretry = 15
+# 3 days
+findtime = 259200
+# 7 days
+bantime = 604800
