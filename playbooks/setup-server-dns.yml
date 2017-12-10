@@ -30,6 +30,6 @@
 
   handlers:
   - include: includes/handlers/bind-restart.yml
-  - include: includes/handlers/webmin.yml #required from common include
+  - include: includes/handlers/webmin-restart.yml #required from common include
 
 - include: apply-firewall.yml servers=$newdnsserver

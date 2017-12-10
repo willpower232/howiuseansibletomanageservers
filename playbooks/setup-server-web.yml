@@ -149,4 +149,4 @@
     - nginx
 
   handlers:
-  - include: includes/handlers/webmin.yml # required from common include
+  - include: includes/handlers/webmin-restart.yml # required from common include
