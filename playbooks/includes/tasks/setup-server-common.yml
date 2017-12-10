@@ -20,15 +20,6 @@
 # - inet_protocols = ipv4
 # - smtp_address_preference = ipv4
 #
-# SSH KEYS for bitbucket
-#
-# your user and root need keys adding to bitbucket
-# but root only uses its key once to clone the repo initially
-#
-# apt-get update && apt-get install curl
-# curl --user USERNAME:PASSWORD --data-urlencode key@/home/wh/.ssh/id_rsa.pub --data "label=Webserver-Root" https://bitbucket.org/api/1.0/users/USERNAME/ssh-keys
-# curl --user USERNAME:PASSWORD --data-urlencode key@/home/wh/.ssh/id_rsa.pub --data "label=Webserver-Root" https://bitbucket.org/api/1.0/repositories/USERNAME/serverconfig/deploy-keys
-#
 
 ---
 
@@ -69,15 +60,25 @@
   - wget
   - needrestart # great on servers, not that useful on WSL
 
+- name: generate SSH key and authenticate with bitbucket
+  shell: |
+    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa > /dev/null;
+    curl --user {{ bbuser }}:{{ bbpass }} --data-urlencode key@~/.ssh/id_rsa --data "label=${hostname}" https://bitbucket.org/api/1.0/repositories/{{ bbuser }}/organisationserverconfig/deploy-keys
+
 - name: make organisation and git directories
-  shell: /bin/mkdir -p /organisation/git && chgrp -R devs /organisation/git && chmod -R 775 /organisation/git
+  file:
+    path: /organisation/git
+    state: directory
 
 - name: add bitbucket ssh key to system
-  shell: ssh-keyscan bitbucket.org >> /etc/ssh/ssh_known_hosts creates=/etc/ssh/ssh_known_hosts   #must use shell for >> support
+  shell: ssh-keyscan bitbucket.org >> /etc/ssh/ssh_known_hosts
+  args:
+    creates: /etc/ssh/ssh_known_hosts
 
 - name: clone git repo
-  become: no
-  git: repo=ssh://git@bitbucket.org/organisation/serverconfig.git dest=/organisation/git
+  git:
+    repo: ssh://git@bitbucket.org/{{ bbuser }}/organisationserverconfig.git
+    dest: /organisation/git
 
 - name: retrieve webmin deb file
   command: wget http://www.webmin.com/download/deb/webmin-current.deb creates=/tmp/webmin-current.deb chdir=/tmp

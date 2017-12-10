@@ -11,6 +11,13 @@
 - hosts: "{{ newdnsserver }}"
   become: yes
   gather_facts: no
+  vars_prompt:
+  - name: "bbuser"
+    prompt: "What is your Bitbucket username?"
+    private: no
+  - name: "bbpass"
+    prompt: "What is your Bitbucket password?"
+    private: yes
   tasks:
   - include: includes/tasks/setup-server-common.yml
 
