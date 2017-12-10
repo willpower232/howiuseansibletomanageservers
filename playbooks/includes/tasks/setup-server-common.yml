@@ -4,9 +4,6 @@
 # RUN THIS MANUALLY FIRST to name the server and adjust the timezone:
 # hostnamectl set-hostname server.organisation.com && ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime && shutdown -r now;
 #
-# INSTALL POSTFIX (apt-get install postfix)
-# - set as Internet Site
-# - set hostname of the server as the thingy
 #
 # add sendgrid settings to postfix, watch out for the duplicate relayhost
 #
@@ -26,11 +23,28 @@
 - name: apt upgrade
   command: apt-get upgrade -y
 
+# debconf-set-selections <<< "postfix postfix/mailname string $(hostname)" && debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'" && apt install -y postfix
+
+- name: set postfix hostname
+  debconf:
+    name: postfix
+    question: postfix/mailname
+    vtype: string
+    value: "$(hostname)"
+
+- name: set postfix type
+  debconf:
+    name: postfix
+    question: postfix/main_mailer_type
+    vtype: string
+    value: "'Internet Site'"
+
 - name: install standard packages
   apt:
     pkg: "{{ item }}"
     state: latest
   with_items:
+  - postfix
   - git
   - perl                  #webmin
   - libnet-ssleay-perl    #webmin
