@@ -1,12 +1,6 @@
 #
 # style bash and MOTD
 #
-# IN ORDER FOR EVERYTHING TO WORK, THERE MUST BE USERS ON EACH COMPUTER WITH THE SAME PASSWORD
-# OBVIOUSLY YOU DON'T NEED THE devs GROUP ON THE DNS SERVERS
-# # groupadd devs && mkdir /home/wh && useradd wh --shell /bin/bash && passwd wh && chown -R wh:wh /home/wh && adduser wh sudo && adduser wh devs
-#
-# when you have added a new user, make sure to set "PermitRootLogin no" in SSH
-#
 # SET UP HOSTNAME PROPERLY
 #    edit /etc/hostname and then reboot
 #

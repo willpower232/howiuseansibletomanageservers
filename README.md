@@ -1,8 +1,16 @@
 # How I use Ansible to manage servers #
 
-Ansible is a great tool for running templated commands and ensuring you don't miss anything when configuring new virtualhosts.
+Ansible is a great tool for running templated commands and ensuring you don't miss anything when configuring new virtualhosts. My preference of server OS is Ubuntu LTS or Debian so these playbooks and configs are made for and tested on those platforms.
 
-I prefer Ansible as it uses SSH and Python which are typically already installed and doesn't require any additional agent.
+I prefer Ansible as it uses SSH and Python which are typically already installed and doesn't require any additional agent. Naturally this means that if you are managing multiple servers, you need to use the same username and key (or password) across all of them.
+
+If you are given a `root` user by default (e.g. on a DigitalOcean droplet) instead of a sudo user (e.g. on an AWS EC2 instance) you should create yourself a sudo user and use that in your playbooks.
+
+`# mkdir /home/wh && useradd wh --shell /bin/bash && passwd wh && chown -R wh:wh /home/wh && adduser wh sudo`
+
+A passwordless sudo user is easier to work with but only makes sense when you are using keys, `$ sudo visudo` and `wh ALL=(ALL) NOPASSWD:ALL` will do the trick but remember the lines are applied in order so add that towards the end of the file.
+
+Once you have a sudo user, you should remove the ability to log in as `root` on SSH by setting `PermitRootLogin no` in `/etc/ssh/sshd_config`.
 
 The approach I use is to have all configuration for a server in a git repository which is then cloned onto the server and the configuration files simlinked. This means all changes are tracked and new servers can be set up very quickly.
 
