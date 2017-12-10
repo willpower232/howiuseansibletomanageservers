@@ -27,7 +27,9 @@
   command: apt-get upgrade -y
 
 - name: install standard packages
-  apt: pkg={{ item }} state=latest
+  apt:
+    pkg: "{{ item }}"
+    state: latest
   with_items:
   - git
   - perl                  #webmin
@@ -72,7 +74,10 @@
     dest: /organisation/git
 
 - name: retrieve webmin deb file
-  command: wget http://www.webmin.com/download/deb/webmin-current.deb creates=/tmp/webmin-current.deb chdir=/tmp
+  get_url:
+    url: wget http://www.webmin.com/download/deb/webmin-current.deb
+    dest: /tmp/webmin-current.deb
+    mode: 0755
 
 - name: install webmin
   command: dpkg --install /tmp/webmin-current.deb
