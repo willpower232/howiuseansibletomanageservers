@@ -68,7 +68,7 @@
 
 - name: clone git repo
   git:
-    repo: ssh://git@bitbucket.org/{{ bbuser }}/organisationserverconfig.git
+    repo: git@bitbucket.org:{{ bbuser }}/organisationserverconfig.git
     dest: /organisation/git
 
 - name: retrieve webmin deb file
