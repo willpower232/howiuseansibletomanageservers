@@ -54,7 +54,7 @@
 - name: generate SSH key and authenticate with bitbucket
   shell: |
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa > /dev/null;
-    curl --user {{ bbuser }}:{{ bbpass }} --data-urlencode key@~/.ssh/id_rsa --data "label=${hostname}" https://bitbucket.org/api/1.0/repositories/{{ bbuser }}/organisationserverconfig/deploy-keys
+    curl --user {{ bbuser }}:{{ bbpass }} --data-urlencode key@${HOME}/.ssh/id_rsa.pub --data "label=$(hostname)" https://bitbucket.org/api/1.0/repositories/{{ bbuser }}/organisationserverconfig/deploy-keys
 
 - name: make organisation and git directories
   file:
