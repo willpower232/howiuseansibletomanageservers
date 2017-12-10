@@ -1,8 +1,8 @@
 #
 # style bash and MOTD
 #
-# SET UP HOSTNAME PROPERLY
-#    edit /etc/hostname and then reboot
+# RUN THIS MANUALLY FIRST to name the server and adjust the timezone:
+# hostnamectl set-hostname server.organisation.com && ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime && shutdown -r now;
 #
 # INSTALL POSTFIX (apt-get install postfix)
 # - set as Internet Site
@@ -16,9 +16,6 @@
 #
 
 ---
-
-- name: change the timezone to london
-  shell: echo "Europe/London" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
 
 - name: ensure python is installed (particularly for AWS EC2)
   raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
