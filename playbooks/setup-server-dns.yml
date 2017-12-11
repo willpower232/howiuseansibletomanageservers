@@ -22,7 +22,9 @@
   - include: includes/tasks/setup-server-common.yml
 
   - name: install bind dns server
-    apt: pkg=bind9 state=latest
+    apt:
+      pkg: bind9
+      state: latest
 
   - name: add your dns zones to bind
     shell: echo 'include "/organisation/git/config/bind/named.conf.git";' >> /etc/bind/named.conf.local

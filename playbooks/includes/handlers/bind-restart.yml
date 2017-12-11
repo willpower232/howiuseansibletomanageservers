@@ -1,3 +1,6 @@
 ---
+
 - name: restart bind
-  service: name=bind9 state=restarted
+  service:
+    name: bind9
+    state: restarted

@@ -18,7 +18,8 @@
   raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
 
 - name: apt update
-  apt: update_cache=yes
+  apt:
+    update_cache: yes
 
 - name: apt upgrade
   command: apt-get upgrade -y
