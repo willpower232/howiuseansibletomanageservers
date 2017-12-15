@@ -18,6 +18,9 @@ access.log = /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/acces
 
 chdir = /organisation/websites/{{ domain_tld }}/{{ domain_sub }}
 
+; please note you may need to relax the open_basedir to the user home instead of website base directory
+; particularly if you have a shared config or credential file (i.e. .aws)
+
 php_admin_value[error_log] = /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/logs/error-fpm.log
 php_admin_value[open_basedir] = /organisation/websites/{{ domain_tld }}/{{ domain_sub }}
 php_admin_value[sys_temp_dir] = /organisation/websites/{{ domain_tld }}/{{ domain_sub }}/tmp
