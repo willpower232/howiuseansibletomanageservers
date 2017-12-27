@@ -1,7 +1,7 @@
 ---
 
 - name: check nginx
-  command: service nginx configtest
+  command: nginx -t
 
 - name: restart nginx
   service:

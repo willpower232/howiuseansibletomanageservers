@@ -1,5 +1,8 @@
 ---
 
+- name: check apache config
+  command: apachectl configtest
+
 - name: restart apache
   service:
     name: apache2
