@@ -135,6 +135,10 @@
       src: /organisation/git/config/nginx/serversettings
       dest: /etc/nginx/conf.d/organisationdefaults.conf
 
+# update default nginx vhost
+# disable /usr/share/nginx/html/index.html
+# disable /var/www/html/index.nginx-debian.html
+
   - name: install PHP defaults
     file:
       state: link
