@@ -155,5 +155,9 @@
     - fpm
     - nginx
 
+# manually generate certificate for web.example.com and rsync letsencrypt directory locally
+# change /etc/cron.d/certbot to something like (delete choice of webserver as required):
+# 0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew && rsync -rqtl /etc/letsencrypt /organisation/local/ && /usr/sbin/nginx -s reload && apachectl -k graceful
+
   handlers:
   - include: includes/handlers/webmin-restart.yml # required from common include

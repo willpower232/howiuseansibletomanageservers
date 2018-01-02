@@ -29,6 +29,14 @@
 		</Directory>
 	</IfModule>
 
+##	if you are using SSL, use port 443 above
+#	SSLEngine on
+#	SSLCertificateFile /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/fullchain.pem
+#	SSLCertificateKeyFile /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/privkey.pem
+#	<FilesMatch "\.(cgi|shtml|phtml|php)$">
+#		SSLOptions +StdEnvVars
+#	</FilesMatch>
+
 </VirtualHost>
 
 # most compact way of redirecting from www to non-www (or vice versa)

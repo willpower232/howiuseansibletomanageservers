@@ -45,3 +45,15 @@ When generating new files, you will have to commit and push them yourself which 
 ### Log Files ###
 
 You will notice that the log files are generated in the website directories. This means you won't find them in `/var/log` as it makes them more accessible to the system user running the website (which may be shared with a third party) and also means if you ever shut down the website, you will remove the log files for that website as well.
+
+### Lets Encrypt ###
+
+Reinstalling `certbot` when the package goes wrong or any other reason will erase your `/etc/letsencrypt` directory which puts your certificates in peril. For safety, I replicate `/etc/letsencrypt` to `/organisation/local/letsencrypt` and reference the certificates from there. This method means you have a working quick backup of your certificates and their configuration.
+
+The default cronjob also needs updating to cover this replication (see `setup-server-web.yml`).
+
+To generate a new certificate and replicate the directory, I would use the below command instead of using a playbook as `certbot` has unpredictable output which `ansible` cannot relay very well.
+
+```
+$ certbot certonly --webroot --webroot-path /organisation/websites/example.com/www/public_html/ --domains www.example.com,example.com && rsync -rqtl /etc/letsencrypt /organisation/local/
+```
