@@ -33,6 +33,6 @@ server {
 		include fastcgi_params;
 	}
 
-	access_log /organisation/websites/example.com/www/logs/access-nginx_development.log;
-	error_log /organisation/websites/example.com/www/logs/error-nginx_development.log;
+	access_log /organisation/websites/example.com/www/logs/access-nginx.log;
+	error_log /organisation/websites/example.com/www/logs/error-nginx.log;
 }
