@@ -1,0 +1,15 @@
+Package: libssl-dev
+Pin: version 1.0.2g-1ubuntu4.9
+Pin-Priority: 1000
+
+Package: libssl1.0.0
+Pin: version 1.0.2g-1ubuntu4.9
+Pin-Priority: 1000
+
+Package: php7.2*
+Pin: release *
+Pin-Priority: -1
+
+Package: php php-*
+Pin: version 1:7.1*
+Pin-Priority: 1000

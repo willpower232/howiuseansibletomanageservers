@@ -17,6 +17,12 @@
 - name: ensure python is installed (particularly for AWS EC2)
   raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
 
+- name: symlink apt preferences
+  file:
+    state: link
+    src: /organisation/git/config/apt/pins
+    dest: /etc/apt/preferences.d/organisationpins
+
 - name: apt update
   apt:
     update_cache: yes
