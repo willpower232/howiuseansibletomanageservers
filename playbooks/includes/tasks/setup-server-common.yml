@@ -17,6 +17,34 @@
 - name: ensure python is installed (particularly for AWS EC2)
   raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
 
+- name: install basic packages
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+  - git
+  - curl
+
+- name: generate SSH key and authenticate with bitbucket
+  shell: |
+    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa > /dev/null;
+    curl --user {{ bbuser }}:{{ bbpass }} --data-urlencode key@${HOME}/.ssh/id_rsa.pub --data "label=$(hostname)" https://bitbucket.org/api/1.0/repositories/{{ bbuser }}/organisationserverconfig/deploy-keys
+
+- name: make organisation and git directories
+  file:
+    path: /organisation/git
+    state: directory
+
+- name: add bitbucket ssh key to system
+  shell: ssh-keyscan bitbucket.org >> /etc/ssh/ssh_known_hosts
+  args:
+    creates: /etc/ssh/ssh_known_hosts
+
+- name: clone git repo
+  git:
+    repo: git@bitbucket.org:{{ bbuser }}/organisationserverconfig.git
+    dest: /organisation/git
+
 - name: symlink apt preferences
   file:
     state: link
@@ -52,7 +80,6 @@
     state: latest
   with_items:
   - postfix
-  - git
   - perl                  #webmin
   - libnet-ssleay-perl    #webmin
   - openssl               #webmin
@@ -70,29 +97,8 @@
   - aptitude
   - fail2ban
   - htop
-  - curl
   - wget
   - needrestart # great on servers, not that useful on WSL
-
-- name: generate SSH key and authenticate with bitbucket
-  shell: |
-    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa > /dev/null;
-    curl --user {{ bbuser }}:{{ bbpass }} --data-urlencode key@${HOME}/.ssh/id_rsa.pub --data "label=$(hostname)" https://bitbucket.org/api/1.0/repositories/{{ bbuser }}/organisationserverconfig/deploy-keys
-
-- name: make organisation and git directories
-  file:
-    path: /organisation/git
-    state: directory
-
-- name: add bitbucket ssh key to system
-  shell: ssh-keyscan bitbucket.org >> /etc/ssh/ssh_known_hosts
-  args:
-    creates: /etc/ssh/ssh_known_hosts
-
-- name: clone git repo
-  git:
-    repo: git@bitbucket.org:{{ bbuser }}/organisationserverconfig.git
-    dest: /organisation/git
 
 - name: retrieve webmin deb file
   get_url:
