@@ -29,6 +29,9 @@
 		</Directory>
 	</IfModule>
 
+## On Debian using mod_proxy and mod_proxy_fcgi built in to Apache 2.4
+#	ProxyPassMatch "/(.*\.php(/.*)?)$" "unix:/var/run/php/php7.1-fpm.sock|fcgi://localhost//organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html/"
+
 ##	if you are using SSL, use port 443 above
 #	SSLEngine on
 #	SSLCertificateFile /organisation/local/letsencrypt/live/{{ domain_sub }}.{{ domain_tld }}/fullchain.pem

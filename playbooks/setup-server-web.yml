@@ -110,6 +110,7 @@
   # if apache
   #- name: activate required apache2 modules
   #  shell: a2enmod actions expires headers rewrite ssl
+  # if on Debian and Apache2.4 you'll need mod_proxy (and mod_proxy_fcgi) but you won't be running an open proxy by default
   # status is enabled by default, maybe add it to a specific domain if you want to use it
   # notes on apache authorization http://www.the-art-of-web.com/system/apache-authorization/
 
