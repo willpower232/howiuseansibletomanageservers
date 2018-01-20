@@ -102,7 +102,7 @@
 
 - name: retrieve webmin deb file
   get_url:
-    url: wget http://www.webmin.com/download/deb/webmin-current.deb
+    url: http://www.webmin.com/download/deb/webmin-current.deb
     dest: /tmp/webmin-current.deb
     mode: 0755
 
