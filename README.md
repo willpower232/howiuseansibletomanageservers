@@ -2,6 +2,8 @@
 
 Ansible is a great tool for running templated commands and ensuring you don't miss anything when configuring new virtualhosts. My preference of server OS is Ubuntu LTS or Debian so these playbooks and configs are made for and tested on those platforms.
 
+The playbooks are mainly scripted for 16.04 but I have included some differences for Debian 9. Please note that you should test the setup playbooks before using on servers you can rebuild quickly as there will almost definitely be differences in package availability.
+
 I prefer Ansible as it uses SSH and Python which are typically already installed and doesn't require any additional agent. Naturally this means that if you are managing multiple servers, you need to use the same username and key (or password) across all of them.
 
 If you are given a `root` user by default (e.g. on a DigitalOcean droplet) instead of a sudo user (e.g. on an AWS EC2 instance) you should create yourself a sudo user and use that in your playbooks.
