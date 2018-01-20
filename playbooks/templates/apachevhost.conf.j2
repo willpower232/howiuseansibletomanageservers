@@ -30,7 +30,9 @@
 	</IfModule>
 
 ## On Debian using mod_proxy and mod_proxy_fcgi built in to Apache 2.4
-#	ProxyPassMatch "/(.*\.php(/.*)?)$" "unix:/var/run/php/php7.1-fpm.sock|fcgi://localhost//organisation/websites/{{ domain_tld }}/{{ domain_sub }}/public_html/"
+#	<FilesMatch \.php$>
+#		SetHandler "proxy:unix:/var/run/php/php7.1-fpm.sock|fcgi://./"
+#	</FilesMatch>
 
 ##	if you are using SSL, use port 443 above
 #	SSLEngine on
