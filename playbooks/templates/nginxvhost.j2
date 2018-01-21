@@ -1,5 +1,11 @@
 server {
 	listen 80;
+	server_name www.{{ domain_sub }}.{{ domain_tld }};
+	return 301 http://www.{{ domain_sub }}.{{ domain_tld }}$request_uri;
+}
+
+server {
+	listen 80;
 #	server_name {{ domain_sub }}.{{ domain_tld }};
 #	return 301 https://{{ domain_sub }}.{{ domain_tld }}$request_uri;
 #}
