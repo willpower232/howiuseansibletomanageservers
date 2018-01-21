@@ -1,9 +1,9 @@
 #
 # SSH Key version:
-# ansible-playbook playbooks/apply-apache-virtualhost.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh
+# ansible-playbook playbooks/apply-apache-vhost.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh
 #
 # SSH Password version:
-# ansible-playbook playbooks/apply-apache-virtualhost.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+# ansible-playbook playbooks/apply-apache-vhost.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
 #
 
 ---
@@ -28,7 +28,7 @@
   - name: activate virtual host
     file:
       state: link
-      src: "/organisation/git/config/apache24/{{ domain_tld }}-{{ domain_sub }}.conf"
+      src: "/organisation/git/config/apache/sites/{{ domain_tld }}-{{ domain_sub }}.conf"
       dest: "/etc/apache2/sites-enabled/{{ domain_tld }}-{{ domain_sub }}.conf"
 
   - name: activate fpm pool
