@@ -25,10 +25,9 @@
   - include: includes/tasks/setup-server-common.yml
 
   # edit as you need:
-  # - if you are using ubuntu 16.04, you'll need the certbot ppa
   # - if you don't have access to php7.1 and want it, you'll need the ondrej ppa
-  - name: add ondrej and certbot PPAs
-    shell: apt install -y python-software-properties software-properties-common && add-apt-repository -y ppa:ondrej/php && add-apt-repository -y ppa:certbot/certbot
+  - name: add ondrej PPA
+    shell: apt install -y python-software-properties software-properties-common && add-apt-repository -y ppa:ondrej/php
 
 # to make this work on debian, you need the following commands (https://www.chris-shaw.com/blog/how-to-install-php-7.1-on-debian-8)
 # apt install apt-transport-https
@@ -44,7 +43,6 @@
       pkg: "{{ item }}"
       state: latest
     with_items:
-    - certbot
     - nginx
     - php7.1-fpm      # if not CGI
     - php7.1-cli
@@ -160,10 +158,6 @@
     #- apache    # if apache
     - fpm
     - nginx
-
-# manually generate certificate for web.example.com and rsync letsencrypt directory locally
-# change /etc/cron.d/certbot to something like (delete choice of webserver as required):
-# 0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew && rsync -rqtl /etc/letsencrypt /organisation/local/ && /usr/sbin/nginx -s reload && apachectl -k graceful
 
   handlers:
   - include: includes/handlers/webmin-restart.yml # required from common include

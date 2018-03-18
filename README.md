@@ -48,11 +48,17 @@ When generating new files, you will have to commit and push them yourself which 
 
 You will notice that the log files are generated in the website directories. This means you won't find them in `/var/log` as it makes them more accessible to the system user running the website (which may be shared with a third party) and also means if you ever shut down the website, you will remove the log files for that website as well.
 
-### Lets Encrypt ###
+## Lets Encrypt ##
 
-Reinstalling `certbot` when the package goes wrong or any other reason will erase your `/etc/letsencrypt` directory which puts your certificates in peril. For safety, I replicate `/etc/letsencrypt` to `/organisation/local/letsencrypt` and reference the certificates from there. This method means you have a working quick backup of your certificates and their configuration.
+Reinstalling `certbot` when the package goes wrong or any other reason may erase your `/etc/letsencrypt` directory which puts your certificates in peril. For safety, I replicate `/etc/letsencrypt` to `/organisation/local/letsencrypt` and reference the certificates from there. This method means you have a working quick backup of your certificates and their configuration.
 
-The default cronjob also needs updating to cover this replication (see `setup-server-web.yml`).
+The best way of getting `certbot` is via python, mainly because it also gives you access to the official plugins for DNS verification (DNS verification is required for obtaining a wildcard). Also the output of pip isn't very friendly with ansible so this is another manual step: `sudo easy_install pip && sudo -H pip install certbot`. If you want a plugin, replace `certbot` with something like `certbot-dns-route53` or `certbot-dns-digitalocean`. Obviously you have both or neither.
+
+The default cronjob also needs updating to cover this replication and if you install via python, you won't actually have a default cron file. Either way, `/etc/cron.d/certbot` should read something like this (delete your choice of web server as required):
+
+```
+0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew && rsync -rqtl /etc/letsencrypt /organisation/local/ && /usr/sbin/nginx -s reload && apachectl -k graceful
+```
 
 To generate a new certificate and replicate the directory, I would use the below command instead of using a playbook as `certbot` has unpredictable output which `ansible` cannot relay very well.
 
