@@ -12,7 +12,7 @@
 - name: create user
   user:
     name: "{{ domain_user }}"
-    shell: /bin/bash
+    shell: /bin/bash # please note that this means if you change the shell of a user, deploying a new website will reset the shell to this value
     home: "/organisation/websites/{{ domain_tld }}"
 
 - name: set permissions
