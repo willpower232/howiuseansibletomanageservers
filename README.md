@@ -57,8 +57,10 @@ The best way of getting `certbot` is via python, mainly because it also gives yo
 The default cronjob also needs updating to cover this replication and if you install via python, you won't actually have a default cron file. Either way, `/etc/cron.d/certbot` should read something like this (delete your choice of web server as required):
 
 ```
-0 */12 * * * root perl -e 'sleep int(rand(3600))' && certbot -q renew && rsync -rqtl /etc/letsencrypt /organisation/local/ && /usr/sbin/nginx -s reload && apachectl -k graceful
+0 */12 * * * root perl -e 'sleep int(rand(3600))' && /usr/local/bin/certbot -q renew && rsync -rqtl /etc/letsencrypt /organisation/local/ && /usr/sbin/nginx -s reload && /usr/sbin/apachectl -k graceful
 ```
+
+Do note that as this manual cron file may not include path information, you may have to specify the whole path to the executables.
 
 To generate a new certificate and replicate the directory, I would use the below command instead of using a playbook as `certbot` has unpredictable output which `ansible` cannot relay very well.
 
