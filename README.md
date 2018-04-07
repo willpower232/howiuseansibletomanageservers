@@ -24,6 +24,8 @@ For redirects that aren't www related, (i.e. something.com to example.com) I pre
 
 These should work with Ansible 2.4 but I know some things like `include` are being deprecated so this will need amending shortly.
 
+**Please note** if you are working from Debian (directly or WSL) then you will need an extra package that isn't installed by default to add keys for other PPAs: `sudo apt install dirmngr`
+
 #### Windows ####
 
 Windows 10 is my main OS so I use WSL (Ubuntu on Windows) and use the PPA installation over whatever is available in the standard APT repositories.
