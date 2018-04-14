@@ -30,4 +30,4 @@
     local_action:
       module: template
       src: templates/fpmpool.j2
-      dest: "../config/fpm/pools/{{ domain_tld }}-{{ domain_sub }}.conf"
+      dest: "../config/php/fpmpools/{{ domain_tld }}-{{ domain_sub }}.conf"

@@ -34,7 +34,7 @@
   - name: activate fpm pool
     file:
       state: link
-      src: "/organisation/git/config/fpm/pools/{{ domain_tld }}-{{ domain_sub }}.conf"
+      src: "/organisation/git/config/php/fpmpools/{{ domain_tld }}-{{ domain_sub }}.conf"
       dest: "/etc/php/7.1/fpm/pool.d/{{ domain_tld }}-{{ domain_sub }}.conf"
 
   - include: includes/handlers/apache-restart.yml

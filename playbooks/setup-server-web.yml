@@ -143,11 +143,23 @@
 # disable /usr/share/nginx/html/index.html
 # disable /var/www/html/index.nginx-debian.html
 
-  - name: install PHP defaults
+  - name: install PHP defaults to CLI
     file:
       state: link
-      src: /organisation/git/config/fpm/phpdefaults
-      dest: /etc/php/7.1/fpm/conf.d/99-organisationdefaults.ini
+      src: /organisation/git/config/php/phpdefaults
+      dest: /etc/php/7.1/cli/conf.d/95-organisationphpdefaults.ini
+
+  - name: install PHP defaults to FPM 
+    file: 
+      state: link 
+      src: /organisation/git/config/php/phpdefaults 
+      dest: /etc/php/7.1/fpm/conf.d/95-organisationphpdefaults.ini 
+ 
+  - name: install PHP FPM defaults 
+    file: 
+      state: link 
+      src: /organisation/git/config/php/fpmdefaults 
+      dest: /etc/php/7.1/fpm/conf.d/99-organisationfpmdefaults.ini 
 
   - name: install additional logrotate config files
     file:
