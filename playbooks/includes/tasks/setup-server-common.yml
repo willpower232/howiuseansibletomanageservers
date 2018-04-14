@@ -4,8 +4,12 @@
 # RUN THIS MANUALLY FIRST to name the server and adjust the timezone:
 # hostnamectl set-hostname server.organisation.com && ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime && shutdown -r now;
 #
+# you can use postfix as a relay to mailgun, sendgrid, etc, watch out for the duplicate relayhost
+# https://sendgrid.com/docs/Integrate/Mail_Servers/postfix.html
+# https://community.rackspace.com/products/f/email-products-forum/3897/how-to-setup-postfix-with-a-mailgun-smtp-relay-when-using-multiple-domains
 #
-# add sendgrid settings to postfix, watch out for the duplicate relayhost
+# definitely keep postfix internal in /etc/postfix/main.cf to avoid opening accidental relay
+# - inet_interfaces = 127.0.0.1
 #
 # may need to force ipv4 in /etc/postfix/main.cf
 # - inet_protocols = ipv4
