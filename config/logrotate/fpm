@@ -1,8 +1,7 @@
 /organisation/websites/*/*/logs/*-fpm.log {
-    rotate 12
-    weekly
+    daily
     missingok
-    notifempty
+    rotate 3
     compress
     delaycompress
     postrotate

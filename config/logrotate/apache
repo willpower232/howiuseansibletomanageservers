@@ -1,11 +1,10 @@
 /organisation/websites/*/*/logs/*-apache.log {
     daily
     missingok
-    rotate 14
+    rotate 3
     compress
     delaycompress
-    notifempty
-    create 640 root adm
+    create 0640 root adm
     sharedscripts
     postrotate
         if /etc/init.d/apache2 status > /dev/null ; then \

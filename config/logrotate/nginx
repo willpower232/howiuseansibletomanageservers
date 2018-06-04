@@ -1,10 +1,9 @@
 /organisation/websites/*/*/logs/*-nginx.log {
     daily
     missingok
-    rotate 14
+    rotate 3
     compress
     delaycompress
-    notifempty
     create 0640 www-data adm
     sharedscripts
     prerotate

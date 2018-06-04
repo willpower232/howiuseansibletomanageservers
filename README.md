@@ -50,6 +50,8 @@ When generating new files, you will have to commit and push them yourself which 
 
 You will notice that the log files are generated in the website directories. This means you won't find them in `/var/log` as it makes them more accessible to the system user running the website (which may be shared with a third party) and also means if you ever shut down the website, you will remove the log files for that website as well.
 
+The extra `logrotate` files will rotate the logs in the website directories and reduce the existence of their data to three days. If you want to keep the log information for longer, you can do so but if you reduce it again after that, be aware that the longer-kept files may not all be removed.
+
 ## Lets Encrypt ##
 
 Reinstalling `certbot` when the package goes wrong or any other reason may erase your `/etc/letsencrypt` directory which puts your certificates in peril. For safety, I replicate `/etc/letsencrypt` to `/organisation/local/letsencrypt` and reference the certificates from there. This method means you have a working quick backup of your certificates and their configuration.
