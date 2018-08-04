@@ -1,0 +1,21 @@
+#
+# SSH Key version:
+# ansible-playbook playbooks/apply-web-updates.yml -i playbooks/inventory.txt --private-key=/mnt/c/Users/wh/SSHKeys/master.pem --user=wh
+#
+# SSH Password version:
+# ansible-playbook playbooks/apply-web-updates.yml -i playbooks/inventory.txt --ask-pass --ask-become-pass --user=wh
+#
+
+---
+
+- hosts: webservers
+  gather_facts: no
+  become: yes
+  tasks:
+    - include: includes/tasks/update-repo.yml
+
+    - include: includes/handlers/fpm-restart.yml
+
+    - include: includes/handlers/apache-restart.yml
+
+    - include: includes/handlers/nginx-restart.yml
