@@ -1,8 +1,8 @@
-[{{ domain_user }}-{{ domain_sub }}]
+[{{ domain_short }}-{{ domain_sub }}]
 user = {{ domain_user }}
 group = {{ domain_user }}
 
-listen = /run/php/php7.1-fpm-{{ domain_user }}-{{ domain_sub }}.sock
+listen = /run/php/php7.1-fpm-{{ domain_short }}-{{ domain_sub }}.sock
 listen.owner = www-data
 listen.group = www-data
 

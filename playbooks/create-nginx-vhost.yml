@@ -12,6 +12,9 @@
   - name: "domain_tld"
     prompt: "What is the TLD (i.e. example.com)?"
     private: no
+  - name: "domain_short"
+    prompt: "What is the name bit (i.e. example)?"
+    private: no
   - name: "domain_sub"
     prompt: "What is the site (i.e. www)?"
     private: no
@@ -20,10 +23,10 @@
     private: no
   tasks:
 
-  - name: generate virtualhost file
+  - name: generate nginx virtual host file
     local_action:
       module: template
-      src: templates/nginxvhost.j2
+      src: templates/nginxfpmhost.j2
       dest: "../config/nginx/sites/{{ domain_tld }}-{{ domain_sub }}"
 
   - name: generate pool file

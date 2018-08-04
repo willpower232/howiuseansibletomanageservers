@@ -32,7 +32,7 @@ server {
 			return 404;
 		}
 
-		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_user }}-{{ domain_sub }}.sock;
+		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_short }}-{{ domain_sub }}.sock;
 		fastcgi_index index.php;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 		include fastcgi_params;
@@ -43,7 +43,7 @@ server {
 #		allow 127.0.0.1;
 #		allow 123.45.67.89;
 #		deny all;
-#		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_user }}-{{ domain_sub }}.sock;
+#		fastcgi_pass unix:/var/run/php/php7.1-fpm-{{ domain_short }}-{{ domain_sub }}.sock;
 #		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 #		include fastcgi_params;
 #	}

@@ -71,3 +71,7 @@ To generate a new certificate and replicate the directory, I would use the below
 ```
 $ certbot certonly --webroot --webroot-path /organisation/websites/example.com/www/public_html/ --domains www.example.com,example.com && rsync -rqtl /etc/letsencrypt /organisation/local/
 ```
+
+## Apache ##
+
+Initially I was using and supporting apache alongside nginx but eventually apache just got in the way so I proxied to it using nginx to continue supporting .htaccess files.
