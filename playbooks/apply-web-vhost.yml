@@ -33,7 +33,7 @@
 
   - name: do we need to activate an apache virtual host?
     stat:
-      path: "/wpinc/git/config/nginx/sites/{{ domain_tld }}-{{ domain_sub }}"
+      path: "/wpinc/git/config/apache/sites/{{ domain_tld }}-{{ domain_sub }}"
     register: apachecheck
 
   - name: activate apache virtual host
