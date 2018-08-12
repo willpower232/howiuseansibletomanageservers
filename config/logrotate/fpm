@@ -4,6 +4,8 @@
     rotate 3
     compress
     delaycompress
+    su root adm
+    create 0644 www-data adm
     postrotate
         /usr/lib/php/php7.1-fpm-reopenlogs
     endscript
