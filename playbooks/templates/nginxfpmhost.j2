@@ -22,11 +22,12 @@ server {
 	expires $expires;
 
 	location / {
-		try_files $uri $uri/ /index.php?$query_string;
+		# modern frameworks won't require any querystring on index.php but some things do so double check
+		try_files $uri $uri/ /index.php;
 	}
 
-	location ~ [^/]\.php(/|$) {
-		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+	location ~ \.php(/|$) {
+		fastcgi_split_path_info ^(.+\.php)(/.+)?$;
 
 		if (!-f $document_root$fastcgi_script_name) {
 			return 404;
