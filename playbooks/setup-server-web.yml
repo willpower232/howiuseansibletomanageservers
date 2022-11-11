@@ -111,24 +111,19 @@
   # if on Debian and Apache2.4 you'll need mod_proxy (and mod_proxy_fcgi) but you won't be running an open proxy by default
   # status is enabled by default, maybe add it to a specific domain if you want to use it
   # notes on apache authorization http://www.the-art-of-web.com/system/apache-authorization/
+  # remoteip very important when proxying apache through nginx, don't forget to update combined log to
+  # LogFormat "%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
 
-  #- name: install Apache SSL
-  #  file:
-  #    state: link
-  #    src: /organisation/git/config/apache/ssl
-  #    dest: /etc/apache2/mods-enabled/organisation-ssl.conf
-
-  #- name: install Apache deflate
-  #  file:
-  #    state: link
-  #    src: /organisation/git/config/apache/deflate
-  #    dest: /etc/apache2/mods-enabled/organisation-deflate.conf
-
-  #- name: install Apache expires
-  #  file:
-  #    state: link
-  #    src: /organisation/git/config/apache/expires
-  #    dest: /etc/apache2/mods-enabled/organisation-expires.conf
+  # - name: install Apache additional settings
+  #   file:
+  #     state: link
+  #     src: "/organisation/git/config/apache/{{ item }}"
+  #     dest: "/etc/apache2/mods-enabled/organisation-{{ item }}.conf"
+  #   with_items:
+  #   - deflate
+  #   - expires
+  #   - remoteip
+  #   - ssl
 
   #- name: restart apache2 for updated settings
   #  shell: apachectl -k graceful
