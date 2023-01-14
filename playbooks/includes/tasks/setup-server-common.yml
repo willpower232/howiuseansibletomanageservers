@@ -22,7 +22,7 @@
 ---
 
 - name: ensure python is installed (particularly for AWS EC2)
-  raw: test -e /usr/bin/python || (apt update && apt install -y python-minimal)
+  raw: test -e /usr/bin/python3 || (apt update && apt install -y python3)
 
 - name: install basic packages
   apt:
